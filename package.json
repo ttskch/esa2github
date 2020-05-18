@@ -1,0 +1,21 @@
+{
+  "name": "esa2github",
+  "private": true,
+  "main": "api/webhook.js",
+  "scripts": {
+    "start": "NODE_ENV=development micro",
+    "ngrok": "ngrok http 3000",
+    "postinstall": "if [ ! -e .env ] ; then cp .env.dist .env ; fi"
+  },
+  "author": "ttskch",
+  "license": "MIT",
+  "dependencies": {
+    "@octokit/rest": "^17.9.1",
+    "gray-matter": "^4.0.2",
+    "micro": "^9.3.4"
+  },
+  "devDependencies": {
+    "dotenv": "^8.2.0",
+    "ngrok": "^3.2.7"
+  }
+}

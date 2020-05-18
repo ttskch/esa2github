@@ -1,0 +1,11 @@
+{
+  "env": {
+    "GITHUB_OWNER": "",
+    "GITHUB_REPO": "",
+    "GITHUB_PATH": "",
+    "GITHUB_FILENAME_BY_TITLE": "",
+    "GITHUB_ACCESS_TOKEN": "@github-access-token",
+    "ESA_DISABLE_DEFAULT_FRONTMATTER": "",
+    "ESA_SECRET": "@esa-secret"
+  }
+}
