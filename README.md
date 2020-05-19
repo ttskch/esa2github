@@ -26,7 +26,7 @@ $ vercel secrets add esa-secret {your_secret}
 1. Create or update some posts
 1. That's it!
 
-## Prepending your own frontmatter
+### Prepending your own frontmatter
 
 You can prepend your own frontmatter to posts👍
 
@@ -78,3 +78,23 @@ date: 2020-05-01
 
 ## Hello
 ```
+
+### Reserving commitment
+
+You can reserve to commit and push to GitHub each posts👍
+
+First, tell esa2github the MongoDB URI. (Using [MongoDB Atlas](https://www.mongodb.com/cloud) is maybe reasonable for you)
+
+```bash
+$ vercel secrets add mongodb-uri mongodb://xxx
+```
+
+And add `commitAt` property with string value which is acceptable by [dayjs](https://github.com/iamkun/dayjs) to frontmatter of the post.
+
+    ```
+    ---
+    commitAt: 2020-05-02 18:00:00 +0900
+    ---
+    ```
+
+Enjoy!

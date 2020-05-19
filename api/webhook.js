@@ -7,6 +7,8 @@ const matter = require('gray-matter')
 const yaml = require('js-yaml')
 const {Octokit} = require('@octokit/rest')
 const octokit = new Octokit({auth: process.env.GITHUB_ACCESS_TOKEN})
+const Agenda = require('agenda')
+const dayjs = require('dayjs')
 
 module.exports = async (req, res) => {
   if (req.method.toLowerCase() !== 'post') {
@@ -24,15 +26,37 @@ module.exports = async (req, res) => {
     }
   }
 
-  const content = generateFinalMarkdown(body.post, !!process.env.ESA_DISABLE_DEFAULT_FRONTMATTER)
+  const commitment = generateCommitment(body.post, !!process.env.ESA_DISABLE_DEFAULT_FRONTMATTER)
 
   const filename = (!!process.env.GITHUB_FILENAME_BY_TITLE ? parsePost(body.post).title : body.post.number) + '.md'
   const path = process.env.GITHUB_PATH.replace(/\/$/, '') + '/' + filename
   const message = `[esa2github] ${body.post.message}`
 
-  await pushToGitHub(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, path, message, content)
+  // schedule commitment or commit immediately
+  if (commitment.frontmatter && commitment.frontmatter.commitAt && !!process.env.MONGODB_URI) {
+    const agenda = new Agenda({db: {address: process.env.MONGODB_URI, options: {useUnifiedTopology: true}}});
 
-  res.end('Done')
+    const jobName = `pushToGitHub${dayjs().format('YYYYMMDDHHmmss')}`
+
+    agenda.define(jobName, async job => {
+      try {
+        await pushToGitHub(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, path, message, commitment.content)
+      } catch (e) {
+        console.error(e)
+      }
+    });
+
+    await (async () => {
+      await agenda.start();
+      await agenda.schedule(dayjs(commitment.frontmatter.commitAt), jobName)
+    })();
+
+    res.end('Scheduled')
+    return
+  }
+
+  await pushToGitHub(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, path, message, commitment.content)
+  res.end('Pushed')
 }
 
 const parsePost = post => {
@@ -48,7 +72,7 @@ const parsePost = post => {
   }
 }
 
-const generateFinalMarkdown = (post, disableDefaultFrontmatter) => {
+const generateCommitment = (post, disableDefaultFrontmatter) => {
   const frontmatterInBodyMatches = post.body_md.match(/^```[\r\n]+(---[\r\n]+((?!^---)[^])*[\r\n]+---)[\r\n]+```/)
   const actualContent = post.body_md.replace(frontmatterInBodyMatches[0], '').trim()
 
@@ -61,8 +85,12 @@ const generateFinalMarkdown = (post, disableDefaultFrontmatter) => {
 
   const frontmatter = Object.assign(disableDefaultFrontmatter ? {} : parsePost(post), frontmatterInBody)
 
-  // @see https://stackoverflow.com/questions/57498639/nodeca-js-yaml-appending-on-long-strings
-  return matter.stringify("\n" + actualContent, frontmatter, {lineWidth: -1})
+  return {
+    frontmatter: frontmatter,
+    actualContent: actualContent,
+    // @see https://stackoverflow.com/questions/57498639/nodeca-js-yaml-appending-on-long-strings
+    content: matter.stringify("\n" + actualContent, frontmatter, {lineWidth: -1})
+  }
 }
 
 const pushToGitHub = async (owner, repo, path, message, content) => {
