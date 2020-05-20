@@ -47,17 +47,19 @@ If the post has following contents:
 blog/2020-05-01
 ```
 
-    ```
-    ---
-    title: Hello, esa2github
-    tags:
-      - esa
-      - github
-    date: 2020-05-01
-    ---
-    ```
-    
-    ## Hello
+````
+```
+---
+title: Hello, esa2github
+tags:
+  - esa
+  - github
+date: 2020-05-01
+---
+```
+
+## Hello
+````
 
 Then esa2github creates markdown file like:
 
@@ -96,11 +98,13 @@ You can schedule to commit and push to GitHub for each posts 🎉
 
 To do it, just add `commitAt` property with string value which is acceptable by [dayjs](https://github.com/iamkun/dayjs) to frontmatter of the post.
 
-    ```
-    ---
-    commitAt: 2020-05-02 18:00:00 +0900
-    ---
-    ```
+````
+```
+---
+commitAt: 2020-05-02 18:00:00 +0900
+---
+```
+````
 
 #### If you're hosting by yourself
 
