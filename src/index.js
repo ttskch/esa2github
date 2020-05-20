@@ -70,7 +70,10 @@ const parsePost = post => {
 }
 
 const generateCommitment = (post, disableDefaultFrontmatter) => {
-  const frontmatterInBodyMatches = post.body_md.match(/^```[\r\n]+(---[\r\n]+((?!^---)[^])*[\r\n]+---)[\r\n]+```/)
+  const lineBreakMatcher = '(?:\r|\n|\r\n)'
+  const frontmatterMatcher = '---' + lineBreakMatcher + '(?:[^](?!---' + lineBreakMatcher + '```))*' + lineBreakMatcher + '---'
+  const frontmatterInBodyMatches = post.body_md.match(new RegExp('^```' + lineBreakMatcher + '(' + frontmatterMatcher + ')' + lineBreakMatcher + '```'))
+
   const actualContent = post.body_md.replace(frontmatterInBodyMatches[0], '').trim()
 
   // @see https://github.com/jonschlinkert/gray-matter/issues/62#issuecomment-577628177
