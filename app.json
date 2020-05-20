@@ -16,13 +16,17 @@
   },
   "env": {
     "GITHUB_OWNER": {
-      "description": "GitHub repo owner"
+      "description": "target GitHub repo owner"
     },
     "GITHUB_REPO": {
-      "description": "GitHub repo name"
+      "description": "target GitHub repo name"
+    },
+    "GITHUB_BRANCH": {
+      "description": "target GitHub branch name (empty means default branch)",
+      "required": false
     },
     "GITHUB_BASE_PATH": {
-      "description": "path to dir to add markdown file on GitHub repo (empty means root)",
+      "description": "target path to dir on GitHub repo (empty means root)",
       "required": false
     },
     "GITHUB_FILENAME_BY_TITLE": {

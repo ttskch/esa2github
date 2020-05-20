@@ -1,13 +1,14 @@
 const {Octokit} = require('@octokit/rest')
 const octokit = new Octokit({auth: process.env.GITHUB_ACCESS_TOKEN})
 
-module.exports.push = async (owner, repo, path, message, content) => {
+module.exports.push = async (owner, repo, branch, path, message, content) => {
   // need to know sha value if want to update existent file
   let file
   try {
     file = await octokit.repos.getContents({
       owner,
       repo,
+      ref: branch,
       path,
     })
   } catch (e) {
@@ -20,6 +21,7 @@ module.exports.push = async (owner, repo, path, message, content) => {
   return await octokit.repos.createOrUpdateFile({
     owner,
     repo,
+    branch,
     path,
     message,
     content: Buffer.from(content).toString('base64'),
