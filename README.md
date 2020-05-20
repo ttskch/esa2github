@@ -13,7 +13,7 @@ Heroku ready [esa](https://esa.io/) webhook handler to commit markdown file to G
 
 Just deploy this app to your heroku as follows.
 
-<img src="https://user-images.githubusercontent.com/4360663/82402897-87aa1a80-9a98-11ea-9d60-2b6f08b3b5b0.png" width="50%">
+<img src="https://user-images.githubusercontent.com/4360663/82407879-49672800-9aa5-11ea-954e-a06a02e7501f.png" width="50%">
 
 > Credit card has to be added to your heroku account because this app uses addon. But you can use them totally free. 
 
@@ -33,7 +33,7 @@ Now your webhook is deployed on `https://xxxxxxxx.ngrok.io` 👍 But of course y
 
 ## Usage
 
-1. Create [Generic Webhook](https://docs.esa.io/posts/37) on your esa team as follows<br><img src="https://user-images.githubusercontent.com/4360663/82397243-f41e1d00-9a8a-11ea-8789-a498e457a957.png" width="50%">
+1. Create [Generic Webhook](https://docs.esa.io/posts/37) on your esa team as follows<br><img src="https://user-images.githubusercontent.com/4360663/82407645-b201d500-9aa4-11ea-8d79-1d7914015099.png" width="50%">
 1. Create or update some posts on esa
 1. Your GitHub repository will be updated 🎉
 
