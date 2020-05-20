@@ -38,7 +38,7 @@ module.exports = async (req, res) => {
       await agenda.schedule(dayjs(commitment.frontmatter.commitAt), 'push to github', {
         owner: process.env.GITHUB_OWNER,
         repo: process.env.GITHUB_REPO,
-        branch: process.env.GITHUB_BRANCH || null,
+        branch: process.env.GITHUB_BRANCH,
         path,
         message,
         content: commitment.content,
@@ -50,7 +50,7 @@ module.exports = async (req, res) => {
     return
   }
 
-  await github.push(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, process.env.GITHUB_BRANCH || null, path, message, commitment.content)
+  await github.push(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, process.env.GITHUB_BRANCH, path, message, commitment.content)
   console.log('pushed')
 
   res.end('Pushed')

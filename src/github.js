@@ -5,12 +5,11 @@ module.exports.push = async (owner, repo, branch, path, message, content) => {
   // need to know sha value if want to update existent file
   let file
   try {
-    file = await octokit.repos.getContents({
+    file = await octokit.repos.getContents(Object.assign({
       owner,
       repo,
-      ref: branch,
       path,
-    })
+    }, !!branch ? {ref: branch} : {}))
   } catch (e) {
     file = null
     if (e.status !== 404) {
@@ -18,13 +17,12 @@ module.exports.push = async (owner, repo, branch, path, message, content) => {
     }
   }
 
-  return await octokit.repos.createOrUpdateFile({
+  return await octokit.repos.createOrUpdateFile(Object.assign({
     owner,
     repo,
-    branch,
     path,
     message,
     content: Buffer.from(content).toString('base64'),
     sha: file ? file.data.sha : null,
-  })
+  }, !!branch ? {branch} : {}))
 }

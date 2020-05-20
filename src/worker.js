@@ -4,9 +4,9 @@ const agenda = new Agenda({db: {address: process.env.MONGODB_URI, options: {useU
 const github = require('./github')
 
 agenda.define('push to github', async job => {
-  const {owner, repo, path, message, content} = job.attrs.data
+  const {owner, repo, branch, path, message, content} = job.attrs.data
   try {
-    await github.push(owner, repo, path, message, content)
+    await github.push(owner, repo, branch, path, message, content)
     console.log('pushed')
   } catch (e) {
     console.error(e)
