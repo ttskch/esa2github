@@ -1,9 +1,11 @@
 {
   "name": "esa2github",
   "private": true,
-  "main": "api/webhook.js",
+  "main": "src/index.js",
   "scripts": {
-    "start": "NODE_ENV=development micro",
+    "start": "micro -l tcp://0.0.0.0:$PORT",
+    "worker": "node src/worker.js",
+    "dev": "micro-dev",
     "ngrok": "ngrok http 3000",
     "postinstall": "if [ ! -e .env ] ; then cp .env.dist .env ; fi"
   },
@@ -13,11 +15,12 @@
     "@octokit/rest": "^17.9.1",
     "agenda": "^3.1.0",
     "dayjs": "^1.8.27",
+    "dotenv": "^8.2.0",
     "gray-matter": "^4.0.2",
     "micro": "^9.3.4"
   },
   "devDependencies": {
-    "dotenv": "^8.2.0",
+    "micro-dev": "^3.0.0",
     "ngrok": "^3.2.7"
   }
 }

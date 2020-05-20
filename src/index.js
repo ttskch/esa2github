@@ -1,14 +1,11 @@
-if (process.env.NODE_ENV === 'development') {
-  require('dotenv').config();
-}
+require('dotenv').config()
 const {json, send} = require('micro')
 const crypto = require('crypto')
 const matter = require('gray-matter')
 const yaml = require('js-yaml')
-const {Octokit} = require('@octokit/rest')
-const octokit = new Octokit({auth: process.env.GITHUB_ACCESS_TOKEN})
 const Agenda = require('agenda')
 const dayjs = require('dayjs')
+const github = require('./github')
 
 module.exports = async (req, res) => {
   if (req.method.toLowerCase() !== 'post') {
@@ -29,33 +26,32 @@ module.exports = async (req, res) => {
   const commitment = generateCommitment(body.post, !!process.env.ESA_DISABLE_DEFAULT_FRONTMATTER)
 
   const filename = (!!process.env.GITHUB_FILENAME_BY_TITLE ? parsePost(body.post).title : body.post.number) + '.md'
-  const path = process.env.GITHUB_PATH.replace(/\/$/, '') + '/' + filename
+  const path = (process.env.GITHUB_BASE_PATH.replace(/\/$/, '') + '/' + filename).replace(/^\//, '')
   const message = `[esa2github] ${body.post.message}`
 
   // schedule commitment or commit immediately
   if (commitment.frontmatter && commitment.frontmatter.commitAt && !!process.env.MONGODB_URI) {
     const agenda = new Agenda({db: {address: process.env.MONGODB_URI, options: {useUnifiedTopology: true}}});
 
-    const jobName = `pushToGitHub${dayjs().format('YYYYMMDDHHmmss')}`
-
-    agenda.define(jobName, async job => {
-      try {
-        await pushToGitHub(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, path, message, commitment.content)
-      } catch (e) {
-        console.error(e)
-      }
-    });
-
     await (async () => {
       await agenda.start();
-      await agenda.schedule(dayjs(commitment.frontmatter.commitAt), jobName)
+      await agenda.schedule(dayjs(commitment.frontmatter.commitAt), 'push to github', {
+        owner: process.env.GITHUB_OWNER,
+        repo: process.env.GITHUB_REPO,
+        path,
+        message,
+        content: commitment.content,
+      })
     })();
+    console.log('scheduled')
 
     res.end('Scheduled')
     return
   }
 
-  await pushToGitHub(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, path, message, commitment.content)
+  await github.push(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, path, message, commitment.content)
+  console.log('pushed')
+
   res.end('Pushed')
 }
 
@@ -91,30 +87,4 @@ const generateCommitment = (post, disableDefaultFrontmatter) => {
     // @see https://stackoverflow.com/questions/57498639/nodeca-js-yaml-appending-on-long-strings
     content: matter.stringify("\n" + actualContent, frontmatter, {lineWidth: -1})
   }
-}
-
-const pushToGitHub = async (owner, repo, path, message, content) => {
-  // need to know sha value if want to update existent file
-  let file
-  try {
-    file = await octokit.repos.getContents({
-      owner,
-      repo,
-      path,
-    })
-  } catch (e) {
-    file = null
-    if (e.status !== 404) {
-      throw e
-    }
-  }
-
-  return await octokit.repos.createOrUpdateFile({
-    owner,
-    repo,
-    path,
-    message,
-    content: Buffer.from(content).toString('base64'),
-    sha: file ? file.data.sha : null,
-  })
 }

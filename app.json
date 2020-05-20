@@ -1,0 +1,49 @@
+{
+  "buildpacks": [
+    {
+      "url": "heroku/nodejs"
+    }
+  ],
+  "formation": {
+    "web": {
+      "quantity": 1,
+      "size": "free"
+    },
+    "worker": {
+      "quantity": 1,
+      "size": "free"
+    }
+  },
+  "env": {
+    "GITHUB_OWNER": {
+      "description": "GitHub repo owner"
+    },
+    "GITHUB_REPO": {
+      "description": "GitHub repo name"
+    },
+    "GITHUB_BASE_PATH": {
+      "description": "path to dir to add markdown file on GitHub repo (empty means root)",
+      "required": false
+    },
+    "GITHUB_FILENAME_BY_TITLE": {
+      "description": "if want to use post title instead of post number as markdown filename, set \"yes\" or some truthy value",
+      "required": false
+    },
+    "GITHUB_ACCESS_TOKEN": {
+      "description": "GitHub personal access token"
+    },
+    "ESA_DISABLE_DEFAULT_FRONTMATTER": {
+      "description": "if want to prevent prepending the default frontmatter to markdown file content, set \"yes\" or some truthy value",
+      "required": false
+    },
+    "ESA_SECRET": {
+      "description": "esa secret",
+      "required": false
+    }
+  },
+  "addons": [
+    {
+      "plan": "mongolab:sandbox"
+    }
+  ]
+}

@@ -1,34 +1,45 @@
 # esa2github
 
-[Vercel.com](https://vercel.com) ready [esa](https://esa.io/) webhook handler to commit markdown file to GitHub.  
+Heroku ready [esa](https://esa.io/) webhook handler to commit markdown file to GitHub which has following features:
+
+* **Can modify frontmatter** flexibly so that you can manage contents for some static site generators like Gatsby, Hugo or VuePress
+* **Can schedule to commit and push** to GitHub
 
 ## Installation
 
-[![Deploy to Vercel](https://vercel.com/button)](https://vercel.com/import/project?template=https://github.com/ttskch/esa2github&import=1)
+### Using Heroku
+
+[![Deploy to Heroku](https://www.herokucdn.com/deploy/button.svg)](https://heroku.com/deploy?template=https://github.com/ttskch/esa2github)
+
+Just deploy this app to your heroku as follows.
+
+<img src="https://user-images.githubusercontent.com/4360663/82402897-87aa1a80-9a98-11ea-9d60-2b6f08b3b5b0.png" width="50%">
+
+> Credit card has to be added to your heroku account because this app uses addon. But you can use them totally free. 
+
+Now your webhook is deployed on `https://{app_name}.herokuapp.com` 👍
+
+### Hosting by yourself
 
 ```bash
-$ npm i -g vercel
+$ git clone git@github.com:ttskch/esa2github.git
+$ cd esa2github
+$ npm i
+$ npm start
+$ npm run ngrok # !!only for dev!!
 ```
 
-```bash
-$ vercel env add GITHUB_OWNER production # and set owner
-$ vercel env add GITHUB_REPO production # and set repo
-$ vercel env add GITHUB_PATH production # and set paht/to/dir
-$ vercel env add GITHUB_FILENAME_BY_TITLE production # and set "yes" if want to use post number as filename
-$ vercel env add ESA_DISABLE_DEFAULT_FRONTMATTER production # and set "yes" if want to prepend default frontmatter
-$ vercel secrets add github-access-token {your_secret}
-$ vercel secrets add esa-secret {your_secret}
-```
+Now your webhook is deployed on `https://xxxxxxxx.ngrok.io` 👍 But of course you MUST NOT use [ngrok](https://ngrok.com/) for production.
 
 ## Usage
 
-1. Create [Generic Webhook](https://docs.esa.io/posts/37) on your esa team
-1. Create or update some posts
-1. That's it!
+1. Create [Generic Webhook](https://docs.esa.io/posts/37) on your esa team as follows<br><img src="https://user-images.githubusercontent.com/4360663/82397243-f41e1d00-9a8a-11ea-8789-a498e457a957.png" width="50%">
+1. Create or update some posts on esa
+1. Your GitHub repository will be updated 🎉
 
 ### Prepending your own frontmatter
 
-You can prepend your own frontmatter to posts👍
+You can prepend your own frontmatter to posts 🎉
 
 If the post has following contents:
 
@@ -79,22 +90,31 @@ date: 2020-05-01
 ## Hello
 ```
 
-### Reserving commitment
+### Scheduling commitment
 
-You can reserve to commit and push to GitHub each posts👍
+You can schedule to commit and push to GitHub for each posts 🎉
 
-First, tell esa2github the MongoDB URI. (Using [MongoDB Atlas](https://www.mongodb.com/cloud) is maybe reasonable for you)
-
-```bash
-$ vercel secrets add mongodb-uri mongodb://xxx
-```
-
-And add `commitAt` property with string value which is acceptable by [dayjs](https://github.com/iamkun/dayjs) to frontmatter of the post.
+To do it, just add `commitAt` property with string value which is acceptable by [dayjs](https://github.com/iamkun/dayjs) to frontmatter of the post.
 
     ```
     ---
     commitAt: 2020-05-02 18:00:00 +0900
     ---
     ```
+
+#### If you're hosting by yourself
+
+You have to do just two things before.
+
+1. Set `MONGODB_URI` envvar like as follows:
+    ```
+    MONGODB_URI=mongodb://{user}:{password}@{host}:{port}/{db}
+    ````
+1. Run worker process as follows:
+    ```bash
+    $ npm run worker
+    ```
+
+> Using [MongoDB Atlas](https://www.mongodb.com/cloud) is maybe reasonable for you 👍
 
 Enjoy!
