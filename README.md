@@ -13,7 +13,7 @@ Heroku ready [esa](https://esa.io/) webhook handler to commit markdown file to G
 
 Just deploy this app to your heroku as follows.
 
-<img src="https://user-images.githubusercontent.com/4360663/82407879-49672800-9aa5-11ea-954e-a06a02e7501f.png" width="50%">
+<img src="https://user-images.githubusercontent.com/4360663/82543997-611adb00-9b8f-11ea-889c-e7befe0812c5.png" width="50%">
 
 > Credit card has to be added to your heroku account because this app uses addon. But you can use them totally free. 
 
@@ -114,7 +114,7 @@ To prevent this, you can use [Heroku Scheduler](https://devcenter.heroku.com/art
 
 If you want to commit at the fixed time, add a job of `Every day at...` `xx:xx UTC` `curl https://{your-app-name}.herokuapp.com` to Heroku Scheduler like as follows.
 
-![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gf060e3xpsj30ky0io40a.jpg)
+<img src="https://tva1.sinaimg.cn/large/007S8ZIlgy1gf060e3xpsj30ky0io40a.jpg" width="50%">
 
 #### If you're hosting by yourself
 
