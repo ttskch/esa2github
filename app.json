@@ -48,6 +48,9 @@
   "addons": [
     {
       "plan": "mongolab:sandbox"
+    },
+    {
+      "plan": "scheduler:standard"
     }
   ]
 }

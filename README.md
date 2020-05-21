@@ -106,6 +106,16 @@ commitAt: 2020-05-02 18:00:00 +0900
 ```
 ````
 
+#### If you're using Heroku Free Dyno
+
+esa2github turns [Worker Dyno](https://devcenter.heroku.com/articles/background-jobs-queueing) on and let it consume scheduled commitments. But if you're using Free Dyno, [Web Dyno will be sleeping after 30 min idle time](https://devcenter.heroku.com/articles/free-dyno-hours#dyno-sleeping) and then [also Worker Dyno will be sleeping](https://twitter.com/herokujp/status/1263379997294657536). In this case scheduled commitments will never be consumed untile Web Dyno wake up (webhook requested) next time.
+
+To prevent this, you can use [Heroku Scheduler](https://devcenter.heroku.com/articles/scheduler) 👍
+
+If you want to commit at the fixed time, add a job of `Every day at...` `xx:xx UTC` `curl https://{your-app-name}.herokuapp.com` to Heroku Scheduler like as follows.
+
+![](https://tva1.sinaimg.cn/large/007S8ZIlgy1gf060e3xpsj30ky0io40a.jpg)
+
 #### If you're hosting by yourself
 
 You have to do just two things before.
