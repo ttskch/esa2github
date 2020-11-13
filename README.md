@@ -13,7 +13,7 @@ Heroku ready [esa](https://esa.io/) webhook handler to commit markdown file to G
 
 Just deploy this app to your heroku as follows.
 
-<img src="https://user-images.githubusercontent.com/4360663/82543997-611adb00-9b8f-11ea-889c-e7befe0812c5.png" width="50%">
+<img src="https://user-images.githubusercontent.com/4360663/99034865-79f5cd80-25c1-11eb-909c-412b8511766a.png" width="50%">
 
 > Credit card has to be added to your heroku account because this app uses addon. But you can use them totally free. 
 
@@ -28,6 +28,12 @@ $ npm i
 $ npm start
 $ npm run ngrok # !!only for dev!!
 ```
+
+> If you want to use [scheduling feature](#scheduling-commitment) you also have to run worker as like below.
+>
+> ```bash
+> $ npm run worker
+> ```
 
 Now your webhook is deployed on `https://xxxxxxxx.ngrok.io` 👍 But of course you MUST NOT use [ngrok](https://ngrok.com/) for production.
 
