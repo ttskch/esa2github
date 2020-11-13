@@ -3,7 +3,7 @@ const {json, send} = require('micro')
 const crypto = require('crypto')
 const matter = require('gray-matter')
 const yaml = require('js-yaml')
-const Agenda = require('agenda')
+const Queue = require('bull')
 const dayjs = require('dayjs')
 const github = require('./github')
 
@@ -30,30 +30,27 @@ module.exports = async (req, res) => {
   const message = `[esa2github] ${body.post.message}`
 
   // schedule commitment or commit immediately
-  if (commitment.frontmatter && commitment.frontmatter.commitAt && !!process.env.MONGODB_URI) {
-    const agenda = new Agenda({db: {address: process.env.MONGODB_URI, options: {useUnifiedTopology: true}}});
+  if (commitment.frontmatter && commitment.frontmatter.commitAt && !!process.env.REDIS_URL) {
+    const pushToGitHubQueue = new Queue('push-to-github', process.env.REDIS_URL)
+    const job = await pushToGitHubQueue.add({
+      owner: process.env.GITHUB_OWNER,
+      repo: process.env.GITHUB_REPO,
+      branch: process.env.GITHUB_BRANCH,
+      path,
+      message,
+      content: commitment.content,
+      executeAfter: dayjs(commitment.frontmatter.commitAt),
+    })
+    console.log(`scheduled job ${job.id}`)
 
-    await (async () => {
-      await agenda.start();
-      await agenda.schedule(dayjs(commitment.frontmatter.commitAt), 'push to github', {
-        owner: process.env.GITHUB_OWNER,
-        repo: process.env.GITHUB_REPO,
-        branch: process.env.GITHUB_BRANCH,
-        path,
-        message,
-        content: commitment.content,
-      })
-    })();
-    console.log('scheduled')
-
-    res.end('Scheduled')
+    res.end(`scheduled job ${job.id}`)
     return
   }
 
   await github.push(process.env.GITHUB_OWNER, process.env.GITHUB_REPO, process.env.GITHUB_BRANCH, path, message, commitment.content)
   console.log('pushed')
 
-  res.end('Pushed')
+  res.end('pushed')
 }
 
 const parsePost = post => {

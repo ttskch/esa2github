@@ -47,7 +47,7 @@
   },
   "addons": [
     {
-      "plan": "mongolab:sandbox"
+      "plan": "heroku-redis:hobby-dev"
     },
     {
       "plan": "scheduler:standard"

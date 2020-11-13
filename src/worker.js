@@ -1,19 +1,27 @@
 require('dotenv').config()
-const Agenda = require('agenda')
-const agenda = new Agenda({db: {address: process.env.MONGODB_URI, options: {useUnifiedTopology: true}}})
+const Queue = require('bull')
+const pushToGitHubQueue = new Queue('push-to-github', process.env.REDIS_URL)
+const dayjs = require('dayjs')
 const github = require('./github')
 
-agenda.define('push to github', async job => {
-  const {owner, repo, branch, path, message, content} = job.attrs.data
-  try {
-    await github.push(owner, repo, branch, path, message, content)
-    console.log('pushed')
-  } catch (e) {
-    console.error(e)
-  }
-});
+let timer
 
-(async () => {
-  await agenda.start()
-  await agenda.every('1 minutes', 'push to github')
-})()
+const processor = async (job, done) => {
+  const {owner, repo, branch, path, message, content, executeAfter} = job.data
+  if (dayjs().isAfter(executeAfter)) {
+    try {
+      await github.push(owner, repo, branch, path, message, content)
+      console.log(`pushed via job ${job.id}`)
+      done()
+      clearInterval(timer)
+    } catch (e) {
+      console.error(e)
+      done(e)
+    }
+  }
+}
+
+// process every minute
+pushToGitHubQueue.process((job, done) => {
+  timer = setInterval(() => processor(job, done), 1000 * 60)
+})
