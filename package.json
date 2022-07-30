@@ -3,10 +3,10 @@
   "private": true,
   "main": "src/index.js",
   "scripts": {
-    "start": "micro -l tcp://0.0.0.0:$PORT",
+    "start": "micro -l tcp://0.0.0.0:${PORT:-3000}",
     "worker": "node src/worker.js",
     "dev": "micro-dev",
-    "ngrok": "ngrok http 3000",
+    "ngrok": "ngrok http ${PORT:-3000}",
     "postinstall": "if [ ! -e .env ] ; then cp .env.dist .env ; fi"
   },
   "author": "ttskch",
