@@ -12,15 +12,15 @@
   "author": "ttskch",
   "license": "MIT",
   "dependencies": {
-    "@octokit/rest": "^17.9.1",
-    "bull": "^3.18.1",
-    "dayjs": "^1.8.27",
-    "dotenv": "^8.2.0",
-    "gray-matter": "^4.0.2",
-    "micro": "^9.3.4"
+    "@octokit/rest": "^19.0.3",
+    "bull": "^4.8.5",
+    "dayjs": "^1.11.4",
+    "dotenv": "^16.0.1",
+    "gray-matter": "^4.0.3",
+    "micro": "^9.4.0"
   },
   "devDependencies": {
-    "micro-dev": "^3.0.0",
-    "ngrok": "^3.2.7"
+    "micro-dev": "^3.1.0",
+    "ngrok": "^4.3.1"
   }
 }

@@ -5,7 +5,7 @@ module.exports.push = async (owner, repo, branch, path, message, content) => {
   // need to know sha value if want to update existent file
   let file
   try {
-    file = await octokit.repos.getContents(Object.assign({
+    file = await octokit.repos.getContent(Object.assign({
       owner,
       repo,
       path,
@@ -17,7 +17,7 @@ module.exports.push = async (owner, repo, branch, path, message, content) => {
     }
   }
 
-  return await octokit.repos.createOrUpdateFile(Object.assign({
+  return await octokit.repos.createOrUpdateFileContents(Object.assign({
     owner,
     repo,
     path,
