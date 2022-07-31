@@ -2,7 +2,6 @@ require('dotenv').config()
 const {json, send} = require('micro')
 const crypto = require('crypto')
 const matter = require('gray-matter')
-const yaml = require('js-yaml')
 const Queue = require('bull')
 const dayjs = require('dayjs')
 const github = require('./github')
@@ -72,20 +71,15 @@ const generateCommitment = (post, disableDefaultFrontmatter) => {
   const frontmatterInBodyMatches = post.body_md.match(new RegExp('^```' + lineBreakMatcher + '(' + frontmatterMatcher + ')' + lineBreakMatcher + '```'))
 
   const actualContent = post.body_md.replace(frontmatterInBodyMatches[0], '').trim()
-
-  // @see https://github.com/jonschlinkert/gray-matter/issues/62#issuecomment-577628177
-  const frontmatterInBody = matter(frontmatterInBodyMatches[1], {
-    engines: {
-      yaml: s => yaml.safeLoad(s, {schema: yaml.JSON_SCHEMA})
-    }
-  }).data
-
+  const frontmatterInBody = matter(frontmatterInBodyMatches[1]).data
   const frontmatter = Object.assign(disableDefaultFrontmatter ? {} : parsePost(post), frontmatterInBody)
+  const content = disableDefaultFrontmatter
+    ? frontmatterInBodyMatches[1] + "\n\n" + actualContent
+    : matter.stringify("\n" + actualContent, frontmatter)
 
   return {
-    frontmatter: frontmatter,
-    actualContent: actualContent,
-    // @see https://stackoverflow.com/questions/57498639/nodeca-js-yaml-appending-on-long-strings
-    content: matter.stringify("\n" + actualContent, frontmatter, {lineWidth: -1})
+    frontmatter,
+    actualContent,
+    content,
   }
 }
