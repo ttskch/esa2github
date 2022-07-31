@@ -70,11 +70,11 @@ const generateCommitment = (post, disableDefaultFrontmatter) => {
   const frontmatterMatcher = '---' + lineBreakMatcher + '(?:[^](?!---' + lineBreakMatcher + '```))*' + lineBreakMatcher + '---'
   const frontmatterInBodyMatches = post.body_md.match(new RegExp('^```' + lineBreakMatcher + '(' + frontmatterMatcher + ')' + lineBreakMatcher + '```'))
 
-  const actualContent = post.body_md.replace(frontmatterInBodyMatches[0], '').trim()
-  const frontmatterInBody = matter(frontmatterInBodyMatches[1]).data
+  const actualContent = frontmatterInBodyMatches ? post.body_md.replace(frontmatterInBodyMatches[0], '').trimStart() : post.body_md
+  const frontmatterInBody = frontmatterInBodyMatches ? matter(frontmatterInBodyMatches[1]).data : {}
   const frontmatter = Object.assign(disableDefaultFrontmatter ? {} : parsePost(post), frontmatterInBody)
   const content = disableDefaultFrontmatter
-    ? frontmatterInBodyMatches[1] + "\n\n" + actualContent
+    ? (frontmatterInBodyMatches ? frontmatterInBodyMatches[1] + "\n\n" : '') + actualContent
     : matter.stringify("\n" + actualContent, frontmatter)
 
   return {
