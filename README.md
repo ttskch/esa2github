@@ -165,6 +165,8 @@ commitAt: 2020-05-02 18:00:00 +0900
 
 日時を表す文字列のパースには [dayjs](https://github.com/iamkun/dayjs) を使っているので、dayjsが正常に解釈できる表記なら何でも指定可能です。
 
+予約投稿機能を使用する場合は、[Heroku Data for Redis](https://elements.heroku.com/addons/heroku-redis) や [Upstash](https://upstash.com/) などRedisサーバーを別途用意した上で `REDIS_URL` 環境変数にRedisサーバーのURLを設定する必要があります。
+
 ### Herokuの無料プランで予約投稿機能を使う場合の注意点
 
 esa2githubでは、予約投稿機能の実現のため、Herokuの [Worker Dyno](https://devcenter.heroku.com/articles/background-jobs-queueing) を [ONにしています](https://github.com/ttskch/esa2github/blob/master/app.json#L12-L15)。
