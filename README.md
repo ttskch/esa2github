@@ -64,7 +64,7 @@ $ npm run ngrok # 開発環境向けです。本番環境では適宜Webサー�
 | `GITHUB_ACCESS_TOKEN` | GitHubのPersonal Access Token（[ここで作成](https://github.com/settings/tokens)） | 必須 |  |
 | `ESA_DISABLE_DEFAULT_FRONTMATTER` | 作成されるファイルにデフォルトのFrontmatterを付与しなくする |  | `yes` |
 | `ESA_SECRET` | esaのGeneric Webhookにsecretが設定されている場合はその値 |  |  |
-| `REDIS_URL` | 予約投稿機能を使う場合はRedisサーバーのURL |  | `redis://127.0.0.1:6379` |
+| `REDIS_URL` | 予約投稿機能を使う場合はRedisサーバーのURL |  | `redis://127.0.0.1:6379`<br>`rediss://user:password@host:port?tls=true`  |
 
 ## 使い方
 
@@ -166,6 +166,10 @@ commitAt: 2020-05-02 18:00:00 +0900
 日時を表す文字列のパースには [dayjs](https://github.com/iamkun/dayjs) を使っているので、dayjsが正常に解釈できる表記なら何でも指定可能です。
 
 予約投稿機能を使用する場合は、[Heroku Data for Redis](https://elements.heroku.com/addons/heroku-redis) や [Upstash](https://upstash.com/) などRedisサーバーを別途用意した上で `REDIS_URL` 環境変数にRedisサーバーのURLを設定する必要があります。
+
+なお、UpstashなどTLS経由での接続が必要なRedisサーバーを使用する場合、URLは `rediss://xxxxx?tls=true` といった形式にする必要があります。
+
+> 参考：<https://github.com/OptimalBits/bull/issues/2325>
 
 ### Herokuの無料プランで予約投稿機能を使う場合の注意点
 
