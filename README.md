@@ -167,7 +167,7 @@ commitAt: 2020-05-02 18:00:00 +0900
 
 予約投稿機能を使用する場合は、[Heroku Data for Redis](https://elements.heroku.com/addons/heroku-redis) や [Upstash](https://upstash.com/) などRedisサーバーを別途用意した上で `REDIS_URL` 環境変数にRedisサーバーのURLを設定する必要があります。
 
-なお、UpstashなどTLS経由での接続が必要なRedisサーバーを使用する場合、URLは `rediss://xxxxx?tls=true` といった形式にする必要があります。
+なお、TLS経由での接続が必要なRedisサーバーを使用する場合、URLは `rediss://xxxxx?tls=true` といった形式にする必要があります。
 
 > 参考：<https://github.com/OptimalBits/bull/issues/2325>
 
